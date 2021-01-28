@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "author": "Parsa Ghadimi <qti3eqti3e@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "neon-cli": "^0.4.0"
+  },
+  "scripts": {
+    "install": "neon build"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.3"
+  }
+}
