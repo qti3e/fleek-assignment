@@ -21,7 +21,8 @@ Some people will open the argument that developing software in TypeScript takes 
 admit that they are right. TypeScript, like, most other statically typed languages, tightens up the
 developer's hand by introducing limitations. These limitations force the developer to think deeper
 and come up with more profound data models. What does the software do but
-[move the data around](https://github.com/xoreaxeaxeax/movfuscator)?
+[move the data around](https://github.com/xoreaxeaxeax/movfuscator)? Wouldn't that be better if
+that data was structured more elegantly?
 
 # Authentication
 
