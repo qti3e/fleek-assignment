@@ -32,7 +32,7 @@ pub enum MetricKey {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Metric {
     pub req_count: u64,
-    pub bandwidth_usage: u64,
+    pub bytes_transferred: u64
 }
 
 #[derive(Debug, Serialize, Deserialize)]

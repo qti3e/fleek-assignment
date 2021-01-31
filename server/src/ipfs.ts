@@ -84,7 +84,7 @@ async function downloadBinary(): Promise<void> {
 }
 
 /**
- * Check if the IPFS-damon is already running by making a `/version` request to the server.
+ * Check if the IPFS-daemon is already running by making a `/version` request to the server.
  * @param port The port to be used. Default `5001`.
  */
 async function isIPFSRunning(port: number = 5001): Promise<boolean> {
@@ -173,9 +173,11 @@ function isAPIPublic(address: string): boolean {
 function runDaemon(bin: string, port: number): Promise<number> {
   const promise = createDeferredPromise<number>();
   const ipfs = ChildProcess.spawn(bin, ["daemon"]);
+  let throwError = true;
 
   ipfs.on("error", async (e) => {
     if (e.message.includes("someone else has the lock")) {
+      throwError = false;
       console.log("IPFS is shutting down, we will retry in 3s");
       await sleep(3e3);
       const result = await runIPFSDaemon();
@@ -186,7 +188,8 @@ function runDaemon(bin: string, port: number): Promise<number> {
   });
 
   ipfs.on("exit", () => {
-    promise.reject(new Error("Running daemon failed"));
+    if (throwError)
+      promise.reject(new Error("Running daemon failed. See ipfs/stderr.log for more info."));
   });
 
   ipfs.stdout.once("data", async () => {
@@ -223,7 +226,6 @@ export async function runIPFSDaemon(): Promise<number> {
   const config = await getIPFSConfig(bin);
   const APIAddress = config["Addresses"]["API"];
   const port = getAddressPort(APIAddress);
-  console.log("Port: ", port);
 
   if (isAPIPublic(APIAddress)) {
     throw new Error("SecurityError: IPFS HTTP API must not be public.");
@@ -247,5 +249,3 @@ export async function runIPFSDaemon(): Promise<number> {
   console.log("Running IPFS daemon, it might take a while.");
   return await runDaemon(bin, freePort);
 }
-
-runIPFSDaemon();

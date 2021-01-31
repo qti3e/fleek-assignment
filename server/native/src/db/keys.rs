@@ -9,7 +9,9 @@ db_schema!((DbKey, DbWriteKey, DbReadKey) {
     /// Store the usage metrics for each API-Key.
     cf METRICS(Metrics:MetricKey) -> Metric {},
     /// Map each username into the ID of the user who own the username.
-    cf USERS(Username:String) -> UserDetail {},
+    cf USERS(Username:String) -> UserDetail {
+        UsernameExists -> ();
+    },
     /// A set of tuples in the form `(UserID, APIKey)` so we can lookup all the API-keys
     /// owned by a user by a prefix lookup.
     cf USER_API_KEYS(UserAPIKeys:(UserID, APIKeyIdentifier)) -> () {},

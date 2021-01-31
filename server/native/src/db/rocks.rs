@@ -28,23 +28,28 @@ impl DB {
             path,
             vec![
                 rocksdb::ColumnFamilyDescriptor::new(keys::API_KEYS, {
+                    // TODO(qti3e) Tune the CF.
                     rocksdb::Options::default()
                 }),
                 rocksdb::ColumnFamilyDescriptor::new(keys::USER_API_KEYS, {
+                    // TODO(qti3e) Tune the CF.
                     rocksdb::Options::default()
                 }),
-                rocksdb::ColumnFamilyDescriptor::new(keys::USERS, { rocksdb::Options::default() }),
+                rocksdb::ColumnFamilyDescriptor::new(keys::USERS, {
+                    // TODO(qti3e) Tune the CF.
+                    rocksdb::Options::default()
+                }),
                 rocksdb::ColumnFamilyDescriptor::new(keys::METRICS, {
                     let mut opts = rocksdb::Options::default();
                     opts.set_merge_operator("metric_counter", metric_merge, None);
-                    // TODO(qti3e)
+                    // TODO(qti3e) Delete old data.
                     // opts.set_compaction_filter()
                     opts
                 }),
                 rocksdb::ColumnFamilyDescriptor::new(keys::LOG, {
                     let mut opts = rocksdb::Options::default();
                     opts.set_merge_operator("bincode_push", vec_push_merge, None);
-                    // TODO(qti3e)
+                    // TODO(qti3e) Delete old data.
                     // opts.set_compaction_filter()
                     opts
                 }),
@@ -136,14 +141,14 @@ fn metric_merge(
         Some(bytes) => deserialize::<Metric>(bytes),
         None => Metric {
             req_count: 0,
-            bandwidth_usage: 0,
+            bytes_transferred: 0,
         },
     };
 
     for buf in operands {
         let v = deserialize::<Metric>(buf);
         value.req_count += v.req_count;
-        value.bandwidth_usage += v.bandwidth_usage;
+        value.bytes_transferred += v.bytes_transferred;
     }
 
     Some(serialize(&value))
