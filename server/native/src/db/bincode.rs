@@ -9,6 +9,6 @@ pub fn serialize<S: ?Sized + serde::Serialize>(t: &S) -> Vec<u8> {
 }
 
 #[inline(always)]
-pub fn deserialize<'a, T: serde::Deserialize<'a>>(bytes: &'a [u8]) -> T {
-    bincode::DefaultOptions::new().deserialize(bytes).unwrap()
+pub fn deserialize<T: serde::de::DeserializeOwned>(bytes: &[u8]) -> T {
+    bincode::DefaultOptions::new().deserialize_from(bytes).unwrap()
 }

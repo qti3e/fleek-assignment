@@ -1,7 +1,6 @@
 use neon::prelude::*;
 use rand;
 use serde::{Deserialize, Serialize};
-use serde_json::from_str;
 use sha1::{Digest, Sha1};
 
 pub mod db;
@@ -16,6 +15,8 @@ use utils::hash::*;
 
 // TODO(qti3e) This is just a prototype, we should separate binding from implementation.
 // and yes the code does look ugly because `cargo fmt` is not able to handle macros.
+
+// TODO(qti3e) we can use panic! to throw JS errors. (so calling .unwrap() is ok)
 
 #[inline(always)]
 fn hash_password(password: &String) -> Hash20 {
@@ -50,7 +51,7 @@ declare_types! {
 
         method isAPIKeyEnabled(mut cx) {
             let key: String = cx.argument::<JsString>(0)?.value();
-            let key = match from_str::<types::APIKeyIdentifier>(&key) {
+            let key = match key.parse::<types::APIKeyIdentifier>() {
                 Ok(t) => t,
                 _ => return Ok(cx.boolean(false).upcast())
             };
@@ -129,7 +130,7 @@ declare_types! {
 
         method queryUserAPIKeys(mut cx) {
             let uid: String = cx.argument::<JsString>(0)?.value();
-            let uid = match from_str::<types::UserID>(&uid) {
+            let uid = match uid.parse::<types::UserID>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };
@@ -179,7 +180,7 @@ declare_types! {
         method createNewAPIKey(mut cx) {
             let uid: String = cx.argument::<JsString>(0)?.value();
             let name: String = cx.argument::<JsString>(1)?.value();
-            let uid = match from_str::<types::UserID>(&uid) {
+            let uid = match uid.parse::<types::UserID>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };
@@ -222,12 +223,12 @@ declare_types! {
             let uid: String = cx.argument::<JsString>(1)?.value();
             let is_enabled: bool = cx.argument::<JsBoolean>(2)?.value();
 
-            let key = match from_str::<types::APIKeyIdentifier>(&key) {
+            let key = match key.parse::<types::APIKeyIdentifier>() {
                 Ok(t) => t,
                 _ => return Ok(cx.boolean(false).upcast())
             };
 
-            let uid = match from_str::<types::UserID>(&uid) {
+            let uid = match uid.parse::<types::UserID>() {
                 Ok(t) => t,
                 _ => return Ok(cx.boolean(false).upcast())
             };
@@ -272,7 +273,7 @@ declare_types! {
             let endpoint: String = cx.argument::<JsString>(1)?.value();
             let bytes_transferred: u64 = cx.argument::<JsNumber>(3)?.value() as u64;
 
-            let key = match from_str::<types::APIKeyIdentifier>(&key) {
+            let key = match key.parse::<types::APIKeyIdentifier>() {
                 Ok(t) => t,
                 _ => return Ok(cx.boolean(false).upcast())
             };
@@ -312,12 +313,12 @@ declare_types! {
             let key: String = cx.argument::<JsString>(0)?.value();
             let uid: String = cx.argument::<JsString>(1)?.value();
 
-            let key = match from_str::<types::APIKeyIdentifier>(&key) {
+            let key = match key.parse::<types::APIKeyIdentifier>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };
 
-            let uid = match from_str::<types::UserID>(&uid) {
+            let uid = match uid.parse::<types::UserID>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };
@@ -386,12 +387,12 @@ declare_types! {
             let key: String = cx.argument::<JsString>(0)?.value();
             let uid: String = cx.argument::<JsString>(1)?.value();
 
-            let key = match from_str::<types::APIKeyIdentifier>(&key) {
+            let key = match key.parse::<types::APIKeyIdentifier>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };
 
-            let uid = match from_str::<types::UserID>(&uid) {
+            let uid = match uid.parse::<types::UserID>() {
                 Ok(t) => t,
                 _ => return Ok(cx.null().upcast())
             };

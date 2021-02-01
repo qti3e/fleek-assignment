@@ -1,6 +1,6 @@
-import { DB } from '../native';
+import { DB } from "../native";
 import path = require("path");
 
-const db = new DB(path.join(__dirname, '../db'));
+const db = new DB(path.join(__dirname, "../db"));
 
 export default db;
