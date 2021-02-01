@@ -8,6 +8,8 @@ pub enum Error {
     AcquireWriteLock,
     AcquireReadLock,
     AcquireLock,
+    APIKeyNotFound,
+    AccessDenied,
 }
 
 impl error::Error for Error {
@@ -26,6 +28,10 @@ impl fmt::Display for Error {
             Error::AcquireWriteLock => write!(f, "Could not acquire the write lock."),
             Error::AcquireReadLock => write!(f, "Could not acquire the read lock."),
             Error::AcquireLock => write!(f, "Could not acquire a lock."),
+            Error::APIKeyNotFound => write!(f, "API key not found."),
+            Error::AccessDenied => {
+                write!(f, "You don't have the permission to perform the action.")
+            }
         }
     }
 }

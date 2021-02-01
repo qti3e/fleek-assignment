@@ -17,6 +17,19 @@ export interface Metric {
 
 export type MetricsSnapshot = [minute: Metric, hour: Metric, day: Metric];
 
+declare enum EventKind {
+  Created = "created",
+  Enabled = "enabled",
+  Disabled = "disabled",
+  ProxyReq = "req",
+}
+
+export type LogEvent =
+  | { kind: EventKind.Created; time: number }
+  | { kind: EventKind.Enabled; time: number }
+  | { kind: EventKind.Disabled; time: number }
+  | { kind: EventKind.ProxyReq; time: number; endpoint: string };
+
 /**
  * An specialized DB built on the top of `RocksDB` only for this assignment.
  */
@@ -45,7 +58,7 @@ export declare class DB {
    * @param username The username.
    * @param password The password.
    */
-  auth(username: string, password: string): UserID;
+  auth(username: string, password: string): UserID | null;
 
   /**
    * Return all of the API-keys owned by the given user.
@@ -53,14 +66,14 @@ export declare class DB {
    * TODO(qti3e): Support Pagination.
    * @param uid ID of the user.
    */
-  queryUserAPIKeys(uid: UserID): APIKey[];
+  queryUserAPIKeys(uid: UserID): APIKey[] | null;
 
   /**
    * Create a new API key with the given information.
    * @param uid ID of the owner.
    * @param name Name of the API-key to help the user identify the API-keys.
    */
-  createNewAPIKey(uid: UserID, name: string): APIKeyIdentifier;
+  createNewAPIKey(uid: UserID, name: string): APIKeyIdentifier | null;
 
   /**
    * Change the current status of an API key, the current `uid` must be provided to check
@@ -69,7 +82,7 @@ export declare class DB {
    * @param user The user who is making the request.
    * @param isEnabled The new status.
    */
-  setStatus(key: APIKeyIdentifier, user: UserID, isEnabled: boolean): void;
+  setStatus(key: APIKeyIdentifier, user: UserID, isEnabled: boolean): boolean;
 
   /**
    * Log a request and store the metrics.
@@ -77,10 +90,9 @@ export declare class DB {
    * @param endpoint The HTTP endpoint that was accessed.
    * @param bytesTransferred Total number of bytes that was transferred.
    */
-  logRequest(key: APIKeyIdentifier, endpoint: string, bytesTransferred: number): void;
+  logRequest(key: APIKeyIdentifier, endpoint: string, bytesTransferred: number): boolean;
 
-  getMetricsSnapshot(key: APIKeyIdentifier): MetricsSnapshot;
+  getLog(key: APIKeyIdentifier, uid: UserID): LogEvent[] | null;
 
-  // TODO(qti3e) Return type.
-  getLogs(): any[];
+  getMetricsSnapshot(key: APIKeyIdentifier, uid: UserID): MetricsSnapshot | null;
 }
