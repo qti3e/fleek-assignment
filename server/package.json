@@ -24,7 +24,9 @@
   },
   "scripts": {
     "install": "neon build",
-    "fmt": "prettier --write src/**/*"
+    "fmt": "prettier --write src/**/*",
+    "build": "tsc",
+    "start": "node ./build/main.js"
   },
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
