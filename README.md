@@ -3,6 +3,8 @@
 This repository contains the source code for a simple web application that manages access to a local
 IPFS node, which includes creating and controlling private API keys through the app.
 
+I'm not personally proud of the result.
+
 # Written Questions
 
 1) How would you improve this assignment for a production-ready solution (e.g., security, deployment)?
