@@ -1,5 +1,4 @@
 import ProgressBar from "progress";
-import IpfsHttpClient from "ipfs-http-client";
 import { createDeferredPromise, sleep } from "./utils";
 import os = require("os");
 import path = require("path");
@@ -88,6 +87,9 @@ async function downloadBinary(): Promise<void> {
  * @param port The port to be used. Default `5001`.
  */
 async function isIPFSRunning(port: number = 5001): Promise<boolean> {
+  // IpfsHttpClient is poorly typed and produces a lot of type errors when
+  // building the project with tsc.
+  const IpfsHttpClient = require("ipfs-http-client" as any);
   const client = IpfsHttpClient({
     host: "localhost",
     port,
@@ -95,7 +97,7 @@ async function isIPFSRunning(port: number = 5001): Promise<boolean> {
   });
 
   try {
-    console.log("IPFS version: ", await client.version());
+    console.log("IPFS is running: ", await client.version());
     return true;
   } catch (e) {
     return false;

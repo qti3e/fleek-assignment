@@ -3,7 +3,13 @@ import { startProxyServer } from "./proxy";
 import startHTTPServer from "./server";
 
 async function main() {
-  const IPFSPort = await runIPFSDaemon();
+  let IPFSPort: number;
+  try {
+    IPFSPort = await runIPFSDaemon();
+  } catch (e) {
+    console.error("Could not run IPFS. Please look at ./server/ipfs/stderr.log for more info.");
+    return;
+  }
   startProxyServer(8080, IPFSPort);
   startHTTPServer(8081);
 }
