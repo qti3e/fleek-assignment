@@ -1,9 +1,14 @@
 import { gql } from "apollo-server-express";
 
 export default gql`
+  type Subscription {
+    log(key: String!): String!
+  }
+
   type Query {
     ownedAPIKeys: [APIKeyDetail!]!
     metricsSnapshot(key: String!): MetricsSnapshot
+    log(key: String!): String!
   }
 
   type Mutation {
@@ -35,8 +40,13 @@ export default gql`
   }
 
   type MetricsSnapshot {
-    min: Int!
-    hour: Int!
-    day: Int!
+    min: Metric!
+    hour: Metric!
+    day: Metric!
+  }
+
+  type Metric {
+    bytes_transferred: Int!
+    req_count: Int!
   }
 `;

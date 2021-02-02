@@ -1,5 +1,6 @@
 import { ListComponent, APIKeyInfo } from "../components/list";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 
 const GET_API_KEYS = gql`
   query APIKeys {
@@ -31,6 +32,7 @@ export default function ListPage() {
   const [createNewAPIKey] = useMutation(NEW_API_KEY);
   const [setStatus] = useMutation(UPDATE_STATUS);
   const { loading, error, data } = useQuery(GET_API_KEYS);
+  const history = useHistory();
 
   if (loading) return <div>Loading</div>;
   if (error) return <div>Error! Please refresh the page.</div>;
@@ -64,7 +66,7 @@ export default function ListPage() {
   };
 
   const onRequestVisit = (id: string) => {
-    console.log("visit", id);
+    history.push("/view/" + id);
   };
 
   return (

@@ -23,7 +23,7 @@
     "unzipper": "^0.10.11"
   },
   "scripts": {
-    "install": "neon build",
+    "install": "neon build --release",
     "fmt": "prettier --write src/**/*",
     "build": "tsc",
     "start": "node ./build/main.js"

@@ -3,6 +3,8 @@ import httpProxy = require("http-proxy");
 import requestStats = require("request-stats");
 import { APIKeyIdentifier } from "../native";
 import db from "./db";
+import pubsub from "./pubsub";
+import { formatLogEvent } from "./utils";
 
 const API_KEY_HEADER = "X-API-KEY";
 
@@ -37,6 +39,15 @@ export function startProxyServer(port: number, ipfsPort: number) {
     if (!token) return;
     const bytes = req.bytes + res.bytes;
     db.logRequest(token, req.path, bytes);
+    // I don't like this.
+    pubsub.publish(
+      token,
+      formatLogEvent({
+        kind: "req" as any,
+        endpoint: req.path,
+        time: (Date.now() / 1000) | 0,
+      })
+    );
   });
 
   server.listen(port, () => {

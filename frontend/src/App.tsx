@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import AuthPage from "./pages/auth";
 import ListPage from "./pages/list";
 import client from "./client";
+import ViewPage from './pages/view';
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
         <AuthPage>
           <Route exact path="/">
             <ListPage></ListPage>
+          </Route>
+          <Route exact path="/view/:id">
+            <ViewPage></ViewPage>
           </Route>
         </AuthPage>
       </Router>

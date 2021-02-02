@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+}
+
+.logContainer {
+  margin: 1rem;
+  flex: 1;
+}
+
+.metricsContainer {
+  margin: 1rem;
+  flex: none;
+  min-width: 14rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+}

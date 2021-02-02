@@ -10,7 +10,7 @@ export function sign(uid: UserID) {
       data: uid,
     },
     JWT_SECRET,
-    { expiresIn: 60 * 60 }
+    { expiresIn: 8 * 60 * 60 }
   );
 }
 

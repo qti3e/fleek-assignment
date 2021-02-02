@@ -1,12 +1,12 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub type Timestamp = u128;
+pub type Timestamp = u64;
 
 /// Return the current unix timestamp.
 #[inline]
 pub fn now() -> Timestamp {
     let duration = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-    duration.as_millis()
+    duration.as_secs()
 }
 
 #[inline]

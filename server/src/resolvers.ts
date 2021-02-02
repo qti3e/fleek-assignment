@@ -3,6 +3,8 @@ import db from "./db";
 import { sign } from "./auth";
 import { ForbiddenError } from "apollo-server-express";
 import { APIKeyIdentifier } from "../native/index";
+import { formatLogEvent } from "./utils";
+import pubsub from "./pubsub";
 
 interface AuthInput {
   username: string;
@@ -32,7 +34,17 @@ const resolvers = {
     },
     metricsSnapshot(_: unknown, args: { key: APIKeyIdentifier }, context: RequestContext) {
       if (!context.uid) throw new ForbiddenError("Invalid token.");
-      return db.getMetricsSnapshot(args.key, context.uid);
+      const result = db.getMetricsSnapshot(args.key, context.uid);
+      if (!result) throw new ForbiddenError("Access denied.");
+      return {
+        min: result[0],
+        hour: result[1],
+        day: result[2],
+      };
+    },
+    log(_: unknown, args: { key: APIKeyIdentifier }, context: RequestContext) {
+      if (!context.uid) throw new ForbiddenError("Invalid token.");
+      return db.getLog(args.key, context.uid)?.map(formatLogEvent).join("\n");
     },
   },
   Mutation: {
@@ -70,6 +82,15 @@ const resolvers = {
       } else {
         return { message: "Invalid credentials." };
       }
+    },
+  },
+  Subscription: {
+    log(_: unknown, args: { key: APIKeyIdentifier }, context: RequestContext) {
+      const uid = context.uid;
+      // TODO(qti3e) Use another way to prove the ownership of this API-Key instead of
+      // getMetricsSnapshot.
+      if (!uid || !db.getMetricsSnapshot(args.key, uid)) throw new ForbiddenError("Invalid token.");
+      return pubsub.asyncIterator(args.key);
     },
   },
 };

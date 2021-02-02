@@ -5,6 +5,7 @@ import resolvers from "./resolvers";
 import { UserID } from "../native/index";
 import { parseBearerSchema } from "./auth";
 import path = require("path");
+import http = require("http");
 
 const PUBLIC_DIR = path.join(__dirname, "../../frontend/build");
 const INDEX_URL = path.join(PUBLIC_DIR, "./index.html");
@@ -12,9 +13,14 @@ const INDEX_URL = path.join(PUBLIC_DIR, "./index.html");
 export default function startHTTPServer(port: number) {
   const app = express();
   const server = new ApolloServer({ typeDefs: schema, resolvers, context: contextFn });
+
   server.applyMiddleware({ app });
   applyRoutes(app);
-  app.listen({ port }, () => {
+
+  const httpServer = http.createServer(app);
+  server.installSubscriptionHandlers(httpServer);
+
+  httpServer.listen({ port }, () => {
     console.log(`🚀 Web Server ready at http://localhost:${port}`);
   });
 }
