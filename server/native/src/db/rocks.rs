@@ -33,7 +33,10 @@ impl DB {
                 }),
                 rocksdb::ColumnFamilyDescriptor::new(keys::USER_API_KEYS, {
                     // TODO(qti3e) Tune the CF.
-                    rocksdb::Options::default()
+                    let mut opts = rocksdb::Options::default();
+                    let prefix_extractor = rocksdb::SliceTransform::create_fixed_prefix(16);
+                    opts.set_prefix_extractor(prefix_extractor);
+                    opts
                 }),
                 rocksdb::ColumnFamilyDescriptor::new(keys::USERS, {
                     // TODO(qti3e) Tune the CF.
