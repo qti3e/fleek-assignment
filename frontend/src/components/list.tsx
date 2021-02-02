@@ -20,9 +20,8 @@ import {
 import { Add16 } from "@carbon/icons-react";
 
 export interface Props {
-  isCreating: boolean;
   onCreate(name: string): void;
-  onToggle(id: string): void;
+  setStatus(id: string, is_enabled: boolean): void;
   onRequestVisit(id: string): void;
   data: APIKeyInfo[];
 }
@@ -91,7 +90,7 @@ export class ListComponent extends React.Component<Props, State> {
             getToolbarProps,
             onInputChange,
             getTableContainerProps,
-          }: DataTableCustomRenderProps<any, any>) => (
+          }: DataTableCustomRenderProps<APIKeyInfo, any>) => (
             <TableContainer
               title="API Keys"
               description="View & Manage Your API Keys"
@@ -129,7 +128,9 @@ export class ListComponent extends React.Component<Props, State> {
                         <OverflowMenu light flipped>
                           <OverflowMenuItem
                             itemText="Toggle Status"
-                            onClick={() => this.props.onToggle(row.id)}
+                            onClick={() =>
+                              this.props.setStatus(row.id, row.cells[1].value === "Disabled")
+                            }
                           />
                           <OverflowMenuItem
                             itemText="View"

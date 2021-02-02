@@ -1,18 +1,21 @@
+import { ApolloProvider } from "@apollo/client";
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import AuthPage from "./pages/auth";
 import ListPage from "./pages/list";
+import client from "./client";
 
 function App() {
   return (
-    <Router>
-      <Route exact path="/">
-        <AuthPage></AuthPage>
-      </Route>
-      <Route path="/list">
-        <ListPage></ListPage>
-      </Route>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <AuthPage>
+          <Route exact path="/">
+            <ListPage></ListPage>
+          </Route>
+        </AuthPage>
+      </Router>
+    </ApolloProvider>
   );
 }
 
